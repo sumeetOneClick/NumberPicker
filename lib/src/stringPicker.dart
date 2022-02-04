@@ -11,17 +11,10 @@ class StringPicker extends StatefulWidget {
   final int value;
 
   /// Called when selected value changes
-  final ValueChanged<int> onChanged;
+  final ValueChanged<String> onChanged;
 
   /// Specifies how many items should be shown - defaults to 3
   final int itemCount;
-
-  /// Step between elements. Only for integer datePicker
-  /// Examples:
-  /// if step is 100 the following elements may be 100, 200, 300...
-  /// if min=0, max=6, step=3, then items will be 0, 3 and 6
-  /// if min=0, max=5, step=3, then items will be 0 and 3.
-  final int step;
 
   /// height of single item in pixels
   final double itemHeight;
@@ -58,7 +51,6 @@ class StringPicker extends StatefulWidget {
     required this.value,
     required this.onChanged,
     this.itemCount = 3,
-    this.step = 1,
     this.itemHeight = 50,
     this.itemWidth = 100,
     this.axis = Axis.vertical,
@@ -69,8 +61,7 @@ class StringPicker extends StatefulWidget {
     this.zeroPad = false,
     this.textMapper,
     this.infiniteLoop = false,
-  })  : assert(values.length <= value),
-        assert(value <= values.length),
+  })  : assert(1 == 1),
         super(key: key);
 
   @override
@@ -85,13 +76,13 @@ class _StringPickerState extends State<StringPicker> {
     super.initState();
     final initialOffset =
         (widget.value - widget.values.indexOf(widget.values.first)) ~/
-            widget.step *
             itemExtent;
     if (widget.infiniteLoop) {
-      _scrollController =
-          InfiniteScrollController(initialScrollOffset: initialOffset);
+      _scrollController = InfiniteScrollController(
+          initialScrollOffset: initialOffset.toDouble());
     } else {
-      _scrollController = ScrollController(initialScrollOffset: initialOffset);
+      _scrollController =
+          ScrollController(initialScrollOffset: initialOffset.toDouble());
     }
     _scrollController.addListener(_scrollListener);
   }
@@ -137,11 +128,7 @@ class _StringPickerState extends State<StringPicker> {
   double get itemExtent =>
       widget.axis == Axis.vertical ? widget.itemHeight : widget.itemWidth;
 
-  int get itemCount =>
-      (widget.values.indexOf(widget.values.last) -
-              widget.values.indexOf(widget.values.first)) ~/
-          widget.step +
-      1;
+  int get itemCount => widget.values.length;
 
   int get listItemsCount => itemCount + 2 * additionalItemsOnEachSide;
 
@@ -208,7 +195,7 @@ class _StringPickerState extends State<StringPicker> {
     final child = isExtra
         ? SizedBox.shrink()
         : Text(
-            _getDisplayedValue(value),
+            value,
             style: itemStyle,
           );
 
@@ -229,16 +216,16 @@ class _StringPickerState extends State<StringPicker> {
     }
   }
 
-  int _intValueFromIndex(int index) {
+  String _intValueFromIndex(int index) {
     index -= additionalItemsOnEachSide;
     index %= itemCount;
-    return widget.values.indexOf(widget.values.first) + index * widget.step;
+    return widget.values[widget.values.indexOf(widget.values.first) + index];
   }
 
   void _maybeCenterValue() {
     if (_scrollController.hasClients && !isScrolling) {
       int diff = widget.value - widget.values.indexOf(widget.values.first);
-      int index = diff ~/ widget.step;
+      int index = diff;
       if (widget.infiniteLoop) {
         final offset = _scrollController.offset + 0.5 * itemExtent;
         final cycles = (offset / (itemCount * itemExtent)).floor();

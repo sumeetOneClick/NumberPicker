@@ -35,19 +35,19 @@ Future<StringPicker> testNumberPicker({
           ? picker = StringPicker(
               values: values,
               value: value,
-              step: step,
               textMapper: textMapper,
               decoration: decoration,
-              onChanged: (newValue) => setState(() => value = newValue),
+              onChanged: (newValue) =>
+                  setState(() => value = values.indexOf(newValue)),
             )
           : StringPicker(
               axis: Axis.horizontal,
               value: value,
               values: values,
-              step: step,
               textMapper: textMapper,
               decoration: decoration,
-              onChanged: (newValue) => setState(() => value = newValue),
+              onChanged: (newValue) =>
+                  setState(() => value = values.indexOf(newValue)),
             );
       return MaterialApp(
         home: Scaffold(
@@ -87,18 +87,18 @@ Future<StringPicker> testMultipleValuesInPicker({
           ? picker = StringPicker(
               value: value,
               values: values,
-              step: step,
               textMapper: textMapper,
-              onChanged: (newValue) => setState(() => value = newValue),
+              onChanged: (newValue) =>
+                  setState(() => value = values.indexOf(newValue)),
               zeroPad: zeroPad,
             )
           : StringPicker(
               value: value,
               values: values,
-              step: step,
               textMapper: textMapper,
               zeroPad: zeroPad,
-              onChanged: (newValue) => setState(() => value = newValue),
+              onChanged: (newValue) =>
+                  setState(() => value = values.indexOf(newValue)),
             );
       return MaterialApp(
         home: Scaffold(

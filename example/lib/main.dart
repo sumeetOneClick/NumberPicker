@@ -9,7 +9,7 @@ class ExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'NumberPicker Example',
+      title: 'String Picker Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -32,16 +32,14 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Integer'),
-              Tab(text: 'Decimal'),
+              Tab(text: 'String'),
             ],
           ),
-          title: Text('Numberpicker example'),
+          title: Text('String picker example'),
         ),
         body: TabBarView(
           children: [
             _IntegerExample(),
-            _DecimalExample(),
           ],
         ),
       ),
@@ -57,17 +55,16 @@ class _IntegerExample extends StatefulWidget {
 class __IntegerExampleState extends State<_IntegerExample> {
   int _currentIntValue = 10;
   int _currentHorizontalIntValue = 10;
-
+  List<String> _values = ['AM', 'PM'];
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         SizedBox(height: 16),
         Text('Default', style: Theme.of(context).textTheme.headline6),
-        NumberPicker(
+        StringPicker(
           value: _currentIntValue,
-          minValue: 0,
-          maxValue: 100,
+          values: _values,
           step: 10,
           haptics: true,
           onChanged: (value) => setState(() => _currentIntValue = value),
@@ -96,10 +93,9 @@ class __IntegerExampleState extends State<_IntegerExample> {
         Divider(color: Colors.grey, height: 32),
         SizedBox(height: 16),
         Text('Horizontal', style: Theme.of(context).textTheme.headline6),
-        NumberPicker(
+        StringPicker(
           value: _currentHorizontalIntValue,
-          minValue: 0,
-          maxValue: 100,
+          values: _values,
           step: 10,
           itemHeight: 100,
           axis: Axis.horizontal,
@@ -130,33 +126,6 @@ class __IntegerExampleState extends State<_IntegerExample> {
             ),
           ],
         ),
-      ],
-    );
-  }
-}
-
-class _DecimalExample extends StatefulWidget {
-  @override
-  __DecimalExampleState createState() => __DecimalExampleState();
-}
-
-class __DecimalExampleState extends State<_DecimalExample> {
-  double _currentDoubleValue = 3.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        SizedBox(height: 16),
-        Text('Decimal', style: Theme.of(context).textTheme.headline6),
-        DecimalNumberPicker(
-          value: _currentDoubleValue,
-          minValue: 0,
-          maxValue: 10,
-          decimalPlaces: 2,
-          onChanged: (value) => setState(() => _currentDoubleValue = value),
-        ),
-        SizedBox(height: 32),
       ],
     );
   }

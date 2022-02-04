@@ -1,16 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:infinite_listview/infinite_listview.dart';
 
 typedef TextMapper = String Function(String numberText);
 
-class NumberPicker extends StatefulWidget {
-  /// Min value user can pick
-  final int minValue;
-
-  /// Max value user can pick
-  final int maxValue;
+class StringPicker extends StatefulWidget {
+  final List<String> values;
 
   /// Currently selected value
   final int value;
@@ -57,10 +52,9 @@ class NumberPicker extends StatefulWidget {
 
   final bool infiniteLoop;
 
-  const NumberPicker({
+  const StringPicker({
     Key? key,
-    required this.minValue,
-    required this.maxValue,
+    required this.values,
     required this.value,
     required this.onChanged,
     this.itemCount = 3,
@@ -75,22 +69,24 @@ class NumberPicker extends StatefulWidget {
     this.zeroPad = false,
     this.textMapper,
     this.infiniteLoop = false,
-  })  : assert(minValue <= value),
-        assert(value <= maxValue),
+  })  : assert(values.length <= value),
+        assert(value <= values.length),
         super(key: key);
 
   @override
-  _NumberPickerState createState() => _NumberPickerState();
+  _StringPickerState createState() => _StringPickerState();
 }
 
-class _NumberPickerState extends State<NumberPicker> {
+class _StringPickerState extends State<StringPicker> {
   late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     final initialOffset =
-        (widget.value - widget.minValue) ~/ widget.step * itemExtent;
+        (widget.value - widget.values.indexOf(widget.values.first)) ~/
+            widget.step *
+            itemExtent;
     if (widget.infiniteLoop) {
       _scrollController =
           InfiniteScrollController(initialScrollOffset: initialOffset);
@@ -123,7 +119,7 @@ class _NumberPickerState extends State<NumberPicker> {
   }
 
   @override
-  void didUpdateWidget(NumberPicker oldWidget) {
+  void didUpdateWidget(StringPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
       _maybeCenterValue();
@@ -141,7 +137,11 @@ class _NumberPickerState extends State<NumberPicker> {
   double get itemExtent =>
       widget.axis == Axis.vertical ? widget.itemHeight : widget.itemWidth;
 
-  int get itemCount => (widget.maxValue - widget.minValue) ~/ widget.step + 1;
+  int get itemCount =>
+      (widget.values.indexOf(widget.values.last) -
+              widget.values.indexOf(widget.values.first)) ~/
+          widget.step +
+      1;
 
   int get listItemsCount => itemCount + 2 * additionalItemsOnEachSide;
 
@@ -221,9 +221,7 @@ class _NumberPickerState extends State<NumberPicker> {
   }
 
   String _getDisplayedValue(int value) {
-    final text = widget.zeroPad
-        ? value.toString().padLeft(widget.maxValue.toString().length, '0')
-        : value.toString();
+    final text = widget.values[value];
     if (widget.textMapper != null) {
       return widget.textMapper!(text);
     } else {
@@ -234,12 +232,12 @@ class _NumberPickerState extends State<NumberPicker> {
   int _intValueFromIndex(int index) {
     index -= additionalItemsOnEachSide;
     index %= itemCount;
-    return widget.minValue + index * widget.step;
+    return widget.values.indexOf(widget.values.first) + index * widget.step;
   }
 
   void _maybeCenterValue() {
     if (_scrollController.hasClients && !isScrolling) {
-      int diff = widget.value - widget.minValue;
+      int diff = widget.value - widget.values.indexOf(widget.values.first);
       int index = diff ~/ widget.step;
       if (widget.infiniteLoop) {
         final offset = _scrollController.offset + 0.5 * itemExtent;

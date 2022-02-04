@@ -15,10 +15,9 @@ Decoration decoration = BoxDecoration(
   ),
 );
 
-Future<NumberPicker> testNumberPicker({
+Future<StringPicker> testNumberPicker({
   required WidgetTester tester,
-  required int minValue,
-  required int maxValue,
+  required List<String> values,
   required int initialValue,
   required int scrollBy,
   int step = 1,
@@ -28,25 +27,23 @@ Future<NumberPicker> testNumberPicker({
   Decoration? decoration,
 }) async {
   int value = initialValue;
-  late NumberPicker picker;
+  late StringPicker picker;
 
   await tester.pumpWidget(
     StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
       picker = axis == Axis.vertical
-          ? picker = NumberPicker(
+          ? picker = StringPicker(
+              values: values,
               value: value,
-              minValue: minValue,
-              maxValue: maxValue,
               step: step,
               textMapper: textMapper,
               decoration: decoration,
               onChanged: (newValue) => setState(() => value = newValue),
             )
-          : NumberPicker(
+          : StringPicker(
               axis: Axis.horizontal,
               value: value,
-              minValue: minValue,
-              maxValue: maxValue,
+              values: values,
               step: step,
               textMapper: textMapper,
               decoration: decoration,
@@ -69,10 +66,9 @@ Future<NumberPicker> testNumberPicker({
   return picker;
 }
 
-Future<NumberPicker> testMultipleValuesInPicker({
+Future<StringPicker> testMultipleValuesInPicker({
   required WidgetTester tester,
-  required int minValue,
-  required int maxValue,
+  required List<String> values,
   required int initialValue,
   required int scrollBy,
   int step = 1,
@@ -83,24 +79,22 @@ Future<NumberPicker> testMultipleValuesInPicker({
   required List<String> expectedDisplayValues,
 }) async {
   int value = initialValue;
-  late NumberPicker picker;
+  late StringPicker picker;
 
   await tester.pumpWidget(
     StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
       picker = axis == Axis.vertical
-          ? picker = NumberPicker(
+          ? picker = StringPicker(
               value: value,
-              minValue: minValue,
-              maxValue: maxValue,
+              values: values,
               step: step,
               textMapper: textMapper,
               onChanged: (newValue) => setState(() => value = newValue),
               zeroPad: zeroPad,
             )
-          : NumberPicker(
+          : StringPicker(
               value: value,
-              minValue: minValue,
-              maxValue: maxValue,
+              values: values,
               step: step,
               textMapper: textMapper,
               zeroPad: zeroPad,
